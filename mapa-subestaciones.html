@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mapa de Subestaciones y Gráfico de Capacidad</title>
+  
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet @1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet @1.9.4/dist/leaflet.css" />
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js "></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
     #map {
       height: 500px;
       width: 100%;
     }
+
     #chart-container {
       width: 80%;
       margin: auto;
       padding: 40px 0;
     }
+
     canvas {
       max-width: 100%;
     }
@@ -29,79 +41,80 @@
 </head>
 <body>
 
-<h2 style="text-align:center;">Ubicación Geográfica de Subestaciones Principales del STN (2024)</h2>
-<div id="map"></div>
+  <h2>Ubicación Geográfica de Subestaciones Principales del STN (2024)</h2>
+  <div id="map"></div>
 
-<h2 style="text-align:center;">Capacidad Instalada por Operador de Generación (2024)</h2>
-<div id="chart-container">
-  <canvas id="barChart"></canvas>
-</div>
+  <h2>Capacidad Instalada por Operador de Generación (2024)</h2>
+  <div id="chart-container">
+    <canvas id="barChart"></canvas>
+  </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet @1.9.4/dist/leaflet.js"></script>
-<script>
-  // Inicializar mapa Leaflet centrado en Colombia
-  const map = L.map('map').setView([4.57, -74.29], 6); // Coordenadas aproximadas de Colombia
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet @1.9.4/dist/leaflet.js"></script>
 
-  // Añadir capas de OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  <script>
+    // Inicializar mapa Leaflet centrado en Colombia
+    const map = L.map('map').setView([4.57, -74.29], 6); // Coordenadas aproximadas de Colombia
 
-  // Datos de subestaciones
-  const subestaciones = [
-    { nombre: 'Chinú', lat: 9.10, lon: -75.40, capacidad: 600 },
-    { nombre: 'La Virginia', lat: 4.90, lon: -75.88, capacidad: 450 },
-    { nombre: 'San Marcos', lat: 3.68, lon: -76.28, capacidad: 120 },
-    { nombre: 'Cerromatoso', lat: 7.84, lon: -75.60, capacidad: 300 },
-    { nombre: 'Sabanalarga', lat: 10.63, lon: -74.92, capacidad: 250 }
-  ];
+    // Añadir capas de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-  // Agregar marcadores al mapa
-  subestaciones.forEach(se => {
-    const marker = L.marker([se.lat, se.lon]).addTo(map);
-    marker.bindPopup(`<b>${se.nombre}</b><br>Capacidad: ${se.capacidad} MVA`);
-  });
+    // Datos de subestaciones
+    const subestaciones = [
+      { nombre: 'Chinú', lat: 9.10, lon: -75.40, capacidad: 600 },
+      { nombre: 'La Virginia', lat: 4.90, lon: -75.88, capacidad: 450 },
+      { nombre: 'San Marcos', lat: 3.68, lon: -76.28, capacidad: 120 },
+      { nombre: 'Cerromatoso', lat: 7.84, lon: -75.60, capacidad: 300 },
+      { nombre: 'Sabanalarga', lat: 10.63, lon: -74.92, capacidad: 250 }
+    ];
 
-  // Dibujar gráfico de barras con Chart.js
-  const ctx = document.getElementById('barChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['ISAGEN', 'EPM', 'EMGESA', 'AES', 'Celsia'],
-      datasets: [{
-        label: 'Capacidad (MW)',
-        data: [2600, 3200, 2800, 1500, 1800],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          enabled: true
-        }
+    // Agregar marcadores al mapa
+    subestaciones.forEach(se => {
+      const marker = L.marker([se.lat, se.lon]).addTo(map);
+      marker.bindPopup(`<b>${se.nombre}</b><br>Capacidad: ${se.capacidad} MVA`);
+    });
+
+    // Gráfico de barras con Chart.js
+    const ctx = document.getElementById('barChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['ISAGEN', 'EPM', 'EMGESA', 'AES', 'Celsia'],
+        datasets: [{
+          label: 'Capacidad (MW)',
+          data: [2600, 3200, 2800, 1500, 1800],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+        }]
       },
-      scales: {
-        x: {
-          ticks: {
-            rotation: 45
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: true
           }
         },
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Capacidad (MW)'
+        scales: {
+          x: {
+            ticks: {
+              rotation: 45
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Capacidad (MW)'
+            }
           }
         }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>
